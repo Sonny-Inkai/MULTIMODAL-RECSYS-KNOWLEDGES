@@ -185,15 +185,135 @@ WARP loss penalizes a positive item at a lower rank much more heavily than one a
 
 \[ L_{\text{InfoNCE}} \approx 0.0068 \]
 
-## Datasets
+## Evaluation metrics
+Here's the translation of the provided Vietnamese text into English:
 
-| Dataset | # Users | # Items | # Interactions | Sparsity |
-|---------|---------|---------|----------------|----------|
-| Baby    | 19,445  | 7,050   | 35,598         | 99.8827% |
-| Sports  | 18,357  | 61,668  | 21,874         | 99.9547% |
-| FoodRec | 192,403 | 63,001  | 160,792        | 99.8774% |
-| Elec    | 296,337 | 1,654,456 | 1,689,188     | 99.9861% |
+---
 
-## References
+In recommender systems, evaluation metrics are commonly used to measure the performance of the recommendation model. Below are some popular metrics along with examples illustrating how to calculate each one:
+
+1. **Precision**  
+Precision measures the proportion of recommended items that are relevant to the user.
+
+\[ \text{Precision} = \frac{|\{ \text{Relevant Items} \} \cap \{ \text{Recommended Items} \}|}{|\{ \text{Recommended Items} \}|} \]
+
+**Example:**  
+- Relevant items: \{A, B, D\}  
+- Recommended items: \{A, B, C\}  
+
+\[ \text{Precision} = \frac{|\{A, B, D\} \cap \{A, B, C\}|}{|\{A, B, C\}|} = \frac{2}{3} \approx 0.67 \]
+
+2. **Recall**  
+Recall measures the proportion of relevant items that are recommended out of all relevant items.
+
+\[ \text{Recall} = \frac{|\{ \text{Relevant Items} \} \cap \{ \text{Recommended Items} \}|}{|\{ \text{Relevant Items} \}|} \]
+
+**Example:**  
+- Relevant items: \{A, B, D\}  
+- Recommended items: \{A, B, C\}  
+
+\[ \text{Recall} = \frac{|\{A, B, D\} \cap \{A, B, C\}|}{|\{A, B, D\}|} = \frac{2}{3} \approx 0.67 \]
+
+3. **F1-Score**  
+F1-Score is the harmonic mean of Precision and Recall.
+
+\[ \text{F1-Score} = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}} \]
+
+**Example:**  
+- Precision: 0.67  
+- Recall: 0.67  
+
+\[ \text{F1-Score} = 2 \cdot \frac{0.67 \cdot 0.67}{0.67 + 0.67} = 0.67 \]
+
+4. **Mean Average Precision (MAP)**  
+MAP measures the average precision across multiple cut-off thresholds.
+
+\[ \text{MAP} = \frac{1}{|Q|} \sum_{q=1}^{|Q|} \text{Average Precision}(q) \]
+
+**Example:**  
+- User 1: Precision = 0.67  
+- User 2: Precision = 0.50  
+
+\[ \text{MAP} = \frac{1}{2} (0.67 + 0.50) = 0.585 \]
+
+5. **Normalized Discounted Cumulative Gain (NDCG)**  
+NDCG evaluates the quality of recommendations based on the ranks of the relevant items.
+
+\[ \text{NDCG} = \frac{\text{DCG}}{\text{IDCG}} \]
+
+Where:
+
+\[ \text{DCG} = \sum_{i=1}^{p} \frac{2^{\text{rel}_i} - 1}{\log_2(i + 1)} \]
+
+**Example:**  
+- Ranks: \{3, 2, 3\}  
+
+\[ \text{DCG} = \frac{2^3 - 1}{\log_2(1 + 1)} + \frac{2^2 - 1}{\log_2(2 + 1)} + \frac{2^3 - 1}{\log_2(3 + 1)} = 7 + 1.89 + 1.5 \approx 10.39 \]
+
+6. **Hit Rate**  
+Hit Rate measures the proportion of recommendation sessions where at least one relevant item is recommended.
+
+\[ \text{Hit Rate} = \frac{|\{ \text{Users} \} \cap \{ \text{Users with at least one relevant item recommended} \}|}{|\{ \text{Users} \}|} \]
+
+**Example:**  
+- 5 users, 4 users have at least 1 relevant item recommended.
+
+\[ \text{Hit Rate} = \frac{4}{5} = 0.8 \]
+
+7. **Coverage**  
+Coverage measures the proportion of items in the dataset that can be recommended.
+
+\[ \text{Coverage} = \frac{|\{ \text{Items recommended} \}|}{|\{ \text{Total items} \}|} \]
+
+**Example:**  
+- 100 total items, 80 items recommended at least once.
+
+\[ \text{Coverage} = \frac{80}{100} = 0.8 \]
+
+8. **Diversity**  
+Diversity measures the variety of items recommended to the user.
+
+\[ \text{Diversity} = 1 - \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j=i+1}^{n} \text{Similarity}(i,j) \]
+
+**Example:**  
+- \( n = 3 \), Similarity scores: 0.2, 0.3, 0.4
+
+\[ \text{Diversity} = 1 - \frac{1}{3(3-1)} (0.2 + 0.3 + 0.4) = 1 - \frac{0.9}{6} = 1 - 0.15 = 0.85 \]
+
+9. **Mean Reciprocal Rank (MRR)**  
+MRR measures the average position of the first relevant item in the recommendation list.
+
+\[ \text{MRR} = \frac{1}{|Q|} \sum_{i=1}^{|Q|} \frac{1}{\text{rank}_i} \]
+
+**Example:**  
+- User 1: rank = 1  
+- User 2: rank = 2  
+
+\[ \text{MRR} = \frac{1}{2} \left( \frac{1}{1} + \frac{1}{2} \right) = \frac{1}{2} \left( 1 + 0.5 \right) = 0.75 \]
+
+10. **Root Mean Square Error (RMSE)**  
+RMSE measures the difference between actual values and predicted values.
+
+\[ \text{RMSE} = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (y_i - \hat{y_i})^2} \]
+
+**Example:**  
+- Actual values: \{3, 4, 5\}  
+- Predicted values: \{3.5, 4, 4.5\}  
+
+\[ \text{RMSE} = \sqrt{\frac{1}{3} ((3-3.5)^2 + (4-4)^2 + (5-4.5)^2)} = \sqrt{0.167} \approx 0.41 \]
+
+11. **Mean Absolute Error (MAE)**  
+MAE measures the average deviation between actual values and predicted values.
+
+\[ \text{MAE} = \frac{1}{N} \sum_{i=1}^{N} |y_i - \hat{y_i}| \]
+
+**Example:**  
+- Actual values: \{3, 4, 5\}  
+- Predicted values: \{3.5, 4, 4.5\}  
+
+\[ \text{MAE} = \frac{1}{3} (|3-3.5| + |4-4| + |5-4.5|) = 0.33 \]
+
+These metrics provide different perspectives on the performance of recommender systems and are often used together to get a comprehensive view of the recommendation quality.
+
 
 - [Understanding Recommender Systems](https://lnkd.in/gqUhE2ny)
